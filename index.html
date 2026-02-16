@@ -286,6 +286,7 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    saveCardToRegistry(cardNumber, data.submittedAt);
                     showResult(
                         `✅ Balance Check Complete!<br>
                         <p><strong>Card: ${data.cardNumber}</strong></p>
@@ -323,27 +324,35 @@
             result.classList.remove('show');
         }
 
-        function loadRecentCards() {
-            // Sample recent cards - in production, this would fetch from the API
-            const sampleCards = [
-                { cardNumber: '1234567890123456', submittedAt: new Date(Date.now() - 2 * 60000).toISOString() },
-                { cardNumber: '9876543210987654', submittedAt: new Date(Date.now() - 15 * 60000).toISOString() },
-                { cardNumber: '5555555555555555', submittedAt: new Date(Date.now() - 45 * 60000).toISOString() },
-                { cardNumber: '4444444444444444', submittedAt: new Date(Date.now() - 2 * 3600000).toISOString() },
-                { cardNumber: '3333333333333333', submittedAt: new Date(Date.now() - 5 * 3600000).toISOString() }
-            ];
+        function saveCardToRegistry(cardNumber, submittedAt) {
+            let cards = JSON.parse(localStorage.getItem('recentCards') || '[]');
 
-            if (sampleCards.length === 0) {
+            // Add new card to the beginning of the list
+            cards.unshift({
+                cardNumber: cardNumber,
+                submittedAt: submittedAt || new Date().toISOString()
+            });
+
+            // Keep only the most recent 10 cards
+            cards = cards.slice(0, 10);
+
+            localStorage.setItem('recentCards', JSON.stringify(cards));
+        }
+
+        function loadRecentCards() {
+            let cards = JSON.parse(localStorage.getItem('recentCards') || '[]');
+
+            if (cards.length === 0) {
                 registryList.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
-                        <p>No cards registered yet</p>
+                        <p>No cards checked yet</p>
                     </div>
                 `;
                 return;
             }
 
-            registryList.innerHTML = sampleCards.map(card => `
+            registryList.innerHTML = cards.map(card => `
                 <div class="registry-card">
                     <div class="card-number">${card.cardNumber.match(/.{1,4}/g).join(' ')}</div>
                     <div class="card-timestamp">${new Date(card.submittedAt).toLocaleString()}</div>
