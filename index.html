@@ -10,40 +10,55 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .card {
             background: white;
             border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
+            padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 10px;
-            font-size: 28px;
+            font-size: 24px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
         }
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         input {
             width: 100%;
             padding: 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 16px;
             font-family: 'Courier New', monospace;
             text-align: center;
             letter-spacing: 2px;
@@ -80,11 +95,12 @@
             cursor: not-allowed;
         }
         .result {
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 15px;
             background: #f5f5f5;
             border-radius: 10px;
             display: none;
+            font-size: 14px;
         }
         .result.show {
             display: block;
@@ -96,15 +112,6 @@
         .result.error {
             background: #f8d7da;
             border: 2px solid #dc3545;
-        }
-        .result h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        .result p {
-            color: #666;
-            font-size: 14px;
-            margin: 5px 0;
         }
         .loader {
             border: 3px solid #f3f3f3;
@@ -123,30 +130,112 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .history-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+        .history-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+        .history-card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .history-date {
+            font-size: 12px;
+            color: #666;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        .refresh-btn {
+            background: #6c757d;
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎴 Card Registry</h1>
-        <p class="subtitle">Enter your 16-character alphanumeric card number</p>
-        
-        <form id="cardForm">
-            <div class="input-group">
-                <input 
-                    type="text" 
-                    id="cardInput" 
-                    placeholder="ABCD EFGH IJKL MNOP"
-                    maxlength="19"
-                    autocomplete="off"
-                />
-                <div class="char-count" id="charCount">0/16 characters</div>
-            </div>
+        <!-- Registration Card -->
+        <div class="card">
+            <h1>🎴 Card Registry</h1>
+            <p class="subtitle">Enter your 16-character alphanumeric card number</p>
             
-            <button type="submit" id="submitBtn">Register Card</button>
-        </form>
+            <form id="cardForm">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="cardInput" 
+                        placeholder="ABCD EFGH IJKL MNOP"
+                        maxlength="19"
+                        autocomplete="off"
+                    />
+                    <div class="char-count" id="charCount">0/16 characters</div>
+                </div>
+                
+                <button type="submit" id="submitBtn">Register Card</button>
+            </form>
 
-        <div class="loader" id="loader"></div>
-        <div class="result" id="result"></div>
+            <div class="loader" id="loader"></div>
+            <div class="result" id="result"></div>
+        </div>
+
+        <!-- Recent History Card -->
+        <div class="card">
+            <h2>📋 Recent Registrations</h2>
+            
+            <div class="stats" id="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Total Cards</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="recentCount">0</div>
+                    <div class="stat-label">Showing</div>
+                </div>
+            </div>
+
+            <button class="refresh-btn" onclick="loadHistory()">🔄 Refresh</button>
+
+            <div class="loader" id="historyLoader"></div>
+            <div class="history-list" id="historyList"></div>
+        </div>
     </div>
 
     <script>
@@ -157,13 +246,19 @@
         const submitBtn = document.getElementById('submitBtn');
         const loader = document.getElementById('loader');
         const result = document.getElementById('result');
+        const historyList = document.getElementById('historyList');
+        const historyLoader = document.getElementById('historyLoader');
+        const totalCount = document.getElementById('totalCount');
+        const recentCount = document.getElementById('recentCount');
+
+        // Load history on page load
+        loadHistory();
 
         // Format input
         input.addEventListener('input', (e) => {
             let value = e.target.value.toUpperCase();
             value = value.replace(/[^A-Z0-9]/g, '');
             
-            // Format with spaces
             let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
             e.target.value = formatted;
             
@@ -191,9 +286,7 @@
             try {
                 const response = await fetch(`${API_URL}/cards`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ cardNumber })
                 });
 
@@ -202,22 +295,73 @@
                 if (response.ok && data.success) {
                     showResult(
                         `✅ Card registered successfully!<br>
-                        <p>Card: ${data.cardNumber}</p>
-                        <p>Time: ${new Date(data.submittedAt).toLocaleString()}</p>`,
+                        <strong>${data.cardNumber}</strong><br>
+                        <small>${new Date(data.submittedAt).toLocaleString()}</small>`,
                         'success'
                     );
                     input.value = '';
                     charCount.textContent = '0/16 characters';
+                    
+                    // Reload history after successful registration
+                    setTimeout(() => loadHistory(), 1000);
                 } else {
                     showResult(`❌ ${data.error || 'Registration failed'}`, 'error');
                 }
             } catch (error) {
-                showResult('❌ Network error. Server may be waking up (wait 30-60s and try again)', 'error');
+                showResult('❌ Network error. Please try again.', 'error');
             } finally {
                 submitBtn.disabled = false;
                 loader.classList.remove('show');
             }
         });
+
+        // Load history
+        async function loadHistory() {
+            historyLoader.classList.add('show');
+            historyList.innerHTML = '';
+
+            try {
+                const response = await fetch(`${API_URL}/cards`);
+                const data = await response.json();
+
+                if (data.success && data.cards) {
+                    const cards = data.cards.slice(0, 10); // Show latest 10
+                    
+                    totalCount.textContent = data.total || data.count;
+                    recentCount.textContent = cards.length;
+
+                    if (cards.length === 0) {
+                        historyList.innerHTML = `
+                            <div class="empty-state">
+                                <p>📭 No cards registered yet</p>
+                                <p style="font-size: 12px; margin-top: 10px;">Register your first card above!</p>
+                            </div>
+                        `;
+                    } else {
+                        cards.forEach(card => {
+                            const item = document.createElement('div');
+                            item.className = 'history-item';
+                            item.innerHTML = `
+                                <div class="history-card-number">${card.cardNumber}</div>
+                                <div class="history-date">
+                                    📅 ${new Date(card.submittedAt).toLocaleString()}
+                                </div>
+                            `;
+                            historyList.appendChild(item);
+                        });
+                    }
+                }
+            } catch (error) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <p>❌ Failed to load history</p>
+                        <p style="font-size: 12px; margin-top: 10px;">Click refresh to try again</p>
+                    </div>
+                `;
+            } finally {
+                historyLoader.classList.remove('show');
+            }
+        }
 
         function showResult(message, type) {
             result.innerHTML = message;
