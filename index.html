@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Registry</title>
+    <title>Gift Card Balance Checker</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -23,17 +23,40 @@
             width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
         h1 {
-            text-align: center;
             color: #333;
-            margin-bottom: 10px;
             font-size: 28px;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .nav-button:hover {
+            background: #e94563;
         }
         .subtitle {
             text-align: center;
             color: #666;
             margin-bottom: 30px;
             font-size: 14px;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
         }
         .input-group {
             margin-bottom: 20px;
@@ -52,7 +75,7 @@
         }
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #f5576c;
         }
         .char-count {
             text-align: center;
@@ -60,10 +83,10 @@
             font-size: 12px;
             margin-top: 5px;
         }
-        button {
+        .primary-button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -72,10 +95,10 @@
             cursor: pointer;
             transition: transform 0.2s;
         }
-        button:hover:not(:disabled) {
+        .primary-button:hover:not(:disabled) {
             transform: translateY(-2px);
         }
-        button:disabled {
+        .primary-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -108,7 +131,7 @@
         }
         .loader {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #f5576c;
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -123,30 +146,90 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .registry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .registry-card {
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            transition: box-shadow 0.3s;
+        }
+        .registry-card:hover {
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.1);
+        }
+        .card-number {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .card-timestamp {
+            font-size: 12px;
+            color: #999;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎴 Card Registry</h1>
-        <p class="subtitle">Enter your 16-character alphanumeric card number</p>
-        
-        <form id="cardForm">
-            <div class="input-group">
-                <input 
-                    type="text" 
-                    id="cardInput" 
-                    placeholder="ABCD EFGH IJKL MNOP"
-                    maxlength="19"
-                    autocomplete="off"
-                />
-                <div class="char-count" id="charCount">0/16 characters</div>
+        <!-- Balance Checker Page -->
+        <div id="balancePage" class="page active">
+            <div class="header">
+                <h1>💳 Gift Card Balance</h1>
+                <button class="nav-button" onclick="goToRegistry()">View Recent</button>
             </div>
-            
-            <button type="submit" id="submitBtn">Register Card</button>
-        </form>
+            <p class="subtitle">Enter your 16-digit gift card number to check balance</p>
 
-        <div class="loader" id="loader"></div>
-        <div class="result" id="result"></div>
+            <form id="cardForm">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        id="cardInput"
+                        placeholder="1234 5678 9012 3456"
+                        maxlength="19"
+                        autocomplete="off"
+                    />
+                    <div class="char-count" id="charCount">0/16 characters</div>
+                </div>
+
+                <button type="submit" class="primary-button" id="submitBtn">Check Balance</button>
+            </form>
+
+            <div class="loader" id="loader"></div>
+            <div class="result" id="result"></div>
+        </div>
+
+        <!-- Recent Registry Page -->
+        <div id="registryPage" class="page">
+            <div class="header">
+                <h1>📋 Recent Cards</h1>
+                <button class="nav-button" onclick="goToBalance()">Back</button>
+            </div>
+            <p class="subtitle">Recently registered gift cards</p>
+
+            <div class="registry-list" id="registryList"></div>
+        </div>
     </div>
 
     <script>
@@ -157,28 +240,31 @@
         const submitBtn = document.getElementById('submitBtn');
         const loader = document.getElementById('loader');
         const result = document.getElementById('result');
+        const balancePage = document.getElementById('balancePage');
+        const registryPage = document.getElementById('registryPage');
+        const registryList = document.getElementById('registryList');
 
         // Format input
         input.addEventListener('input', (e) => {
             let value = e.target.value.toUpperCase();
             value = value.replace(/[^A-Z0-9]/g, '');
-            
+
             // Format with spaces
             let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
             e.target.value = formatted;
-            
+
             const cleaned = value.replace(/\s/g, '');
             charCount.textContent = `${cleaned.length}/16 characters`;
-            
+
             submitBtn.disabled = cleaned.length !== 16;
         });
 
         // Submit form
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const cardNumber = input.value.replace(/\s/g, '');
-            
+
             if (cardNumber.length !== 16) {
                 showResult('Please enter exactly 16 characters', 'error');
                 return;
@@ -201,15 +287,16 @@
 
                 if (response.ok && data.success) {
                     showResult(
-                        `✅ Card registered successfully!<br>
-                        <p>Card: ${data.cardNumber}</p>
-                        <p>Time: ${new Date(data.submittedAt).toLocaleString()}</p>`,
+                        `✅ Balance Check Complete!<br>
+                        <p><strong>Card: ${data.cardNumber}</strong></p>
+                        <p><strong style="color: #28a745; font-size: 18px;">Balance: $${(data.balance || 0).toFixed(2)}</strong></p>
+                        <p style="margin-top: 10px; font-size: 12px;">Checked: ${new Date(data.submittedAt).toLocaleString()}</p>`,
                         'success'
                     );
                     input.value = '';
                     charCount.textContent = '0/16 characters';
                 } else {
-                    showResult(`❌ ${data.error || 'Registration failed'}`, 'error');
+                    showResult(`❌ ${data.error || 'Balance check failed'}`, 'error');
                 }
             } catch (error) {
                 showResult('❌ Network error. Server may be waking up (wait 30-60s and try again)', 'error');
@@ -222,6 +309,46 @@
         function showResult(message, type) {
             result.innerHTML = message;
             result.className = `result show ${type}`;
+        }
+
+        function goToRegistry() {
+            balancePage.classList.remove('active');
+            registryPage.classList.add('active');
+            loadRecentCards();
+        }
+
+        function goToBalance() {
+            registryPage.classList.remove('active');
+            balancePage.classList.add('active');
+            result.classList.remove('show');
+        }
+
+        function loadRecentCards() {
+            // Sample recent cards - in production, this would fetch from the API
+            const sampleCards = [
+                { cardNumber: '1234567890123456', submittedAt: new Date(Date.now() - 2 * 60000).toISOString() },
+                { cardNumber: '9876543210987654', submittedAt: new Date(Date.now() - 15 * 60000).toISOString() },
+                { cardNumber: '5555555555555555', submittedAt: new Date(Date.now() - 45 * 60000).toISOString() },
+                { cardNumber: '4444444444444444', submittedAt: new Date(Date.now() - 2 * 3600000).toISOString() },
+                { cardNumber: '3333333333333333', submittedAt: new Date(Date.now() - 5 * 3600000).toISOString() }
+            ];
+
+            if (sampleCards.length === 0) {
+                registryList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No cards registered yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            registryList.innerHTML = sampleCards.map(card => `
+                <div class="registry-card">
+                    <div class="card-number">${card.cardNumber.match(/.{1,4}/g).join(' ')}</div>
+                    <div class="card-timestamp">${new Date(card.submittedAt).toLocaleString()}</div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
