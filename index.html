@@ -188,58 +188,167 @@
             font-size: 14px;
             margin-top: 10px;
         }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .registry-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px;
+            font-size: 14px;
+        }
+        .password-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        .password-input-group {
+            margin-bottom: 15px;
+        }
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 3px;
+            font-weight: bold;
+            transition: border-color 0.3s;
+        }
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .unlock-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            background: #6c757d;
+            padding: 12px;
+            font-size: 14px;
+        }
+        .password-error {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header-bar h1 {
+            margin: 0;
+        }
+        .back-btn-header {
+            background: #6c757d;
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Registration Card -->
-        <div class="card">
-            <h1>🎴 Card Registry</h1>
-            <p class="subtitle">Enter your 16-character alphanumeric card number</p>
-            
-            <form id="cardForm">
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        id="cardInput" 
-                        placeholder="ABCD EFGH IJKL MNOP"
-                        maxlength="19"
-                        autocomplete="off"
-                    />
-                    <div class="char-count" id="charCount">0/16 characters</div>
-                </div>
-                
-                <button type="submit" id="submitBtn">Register Card</button>
-            </form>
+    <!-- Main Dashboard Page -->
+    <div id="dashboardPage" class="page active">
+        <div class="container">
+            <!-- Registration Card -->
+            <div class="card">
+                <h1>🎴 Card Registry</h1>
+                <p class="subtitle">Enter your 16-character alphanumeric card number</p>
 
-            <div class="loader" id="loader"></div>
-            <div class="result" id="result"></div>
-        </div>
+                <form id="cardForm">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            id="cardInput"
+                            placeholder="ABCD EFGH IJKL MNOP"
+                            maxlength="19"
+                            autocomplete="off"
+                        />
+                        <div class="char-count" id="charCount">0/16 characters</div>
+                    </div>
 
-        <!-- Recent History Card -->
-        <div class="card">
-            <h2>📋 Recent Registrations</h2>
-            
-            <div class="stats" id="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalCount">0</div>
-                    <div class="stat-label">Total Cards</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="recentCount">0</div>
-                    <div class="stat-label">Showing</div>
+                    <button type="submit" id="submitBtn">Register Card</button>
+                </form>
+
+                <div class="loader" id="loader"></div>
+                <div class="result" id="result"></div>
+
+                <div class="action-buttons">
+                    <button class="registry-btn" onclick="goToRegistry()">📋 View Recent Registry</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <button class="refresh-btn" onclick="loadHistory()">🔄 Refresh</button>
+    <!-- Password Protected Registry Page -->
+    <div id="registryPage" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="header-bar">
+                    <h1>📋 Recent Registrations</h1>
+                    <button class="back-btn-header" onclick="backToDashboard()">← Back</button>
+                </div>
 
-            <div class="loader" id="historyLoader"></div>
-            <div class="history-list" id="historyList"></div>
+                <!-- Password Form -->
+                <div id="passwordSection" class="password-form">
+                    <p class="subtitle">Enter password to view registry</p>
+                    <div class="password-input-group">
+                        <input
+                            type="password"
+                            id="passwordInput"
+                            placeholder="••••"
+                            maxlength="10"
+                            class="password-input"
+                        />
+                    </div>
+                    <button class="unlock-btn" onclick="validatePassword()">🔓 Unlock Registry</button>
+                    <div id="passwordError" class="password-error"></div>
+                </div>
+
+                <!-- Registry Content (Hidden until password is correct) -->
+                <div id="registryContent" style="display: none;">
+                    <div class="stats" id="stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalCount">0</div>
+                            <div class="stat-label">Total Cards</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="recentCount">0</div>
+                            <div class="stat-label">Showing</div>
+                        </div>
+                    </div>
+
+                    <button class="refresh-btn" onclick="loadHistory()">🔄 Refresh</button>
+
+                    <div class="loader" id="historyLoader"></div>
+                    <div class="history-list" id="historyList"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://card-registry-backend.onrender.com/api';
+        const REGISTRY_PASSWORD = '5251';
+
+        // DOM Elements
         const input = document.getElementById('cardInput');
         const charCount = document.getElementById('charCount');
         const form = document.getElementById('cardForm');
@@ -250,9 +359,12 @@
         const historyLoader = document.getElementById('historyLoader');
         const totalCount = document.getElementById('totalCount');
         const recentCount = document.getElementById('recentCount');
-
-        // Load history on page load
-        loadHistory();
+        const dashboardPage = document.getElementById('dashboardPage');
+        const registryPage = document.getElementById('registryPage');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordError = document.getElementById('passwordError');
+        const passwordSection = document.getElementById('passwordSection');
+        const registryContent = document.getElementById('registryContent');
 
         // Format input
         input.addEventListener('input', (e) => {
@@ -367,6 +479,47 @@
             result.innerHTML = message;
             result.className = `result show ${type}`;
         }
+
+        // Navigation functions
+        function goToRegistry() {
+            dashboardPage.classList.remove('active');
+            registryPage.classList.add('active');
+            passwordInput.value = '';
+            passwordError.textContent = '';
+            passwordInput.focus();
+        }
+
+        function backToDashboard() {
+            registryPage.classList.remove('active');
+            dashboardPage.classList.add('active');
+            passwordSection.style.display = 'block';
+            registryContent.style.display = 'none';
+            passwordInput.value = '';
+            passwordError.textContent = '';
+        }
+
+        // Password validation
+        function validatePassword() {
+            const enteredPassword = passwordInput.value;
+
+            if (enteredPassword === REGISTRY_PASSWORD) {
+                passwordError.textContent = '';
+                passwordSection.style.display = 'none';
+                registryContent.style.display = 'block';
+                loadHistory();
+            } else {
+                passwordError.textContent = '❌ Incorrect password. Please try again.';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        // Allow Enter key to submit password
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                validatePassword();
+            }
+        });
     </script>
 </body>
 </html>
